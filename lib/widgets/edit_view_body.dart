@@ -1,12 +1,16 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
+//import 'package:flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app_1/cubit/notes_cubit/notes_cubit.dart';
+import 'package:notes_app_1/models/note_model.dart';
 import 'package:notes_app_1/widgets/custom_text_field.dart';
 
 import 'custom_app_bar.dart';
 
 class EditNoteViewBody extends StatefulWidget {
-  const EditNoteViewBody({super.key});
+  const EditNoteViewBody({super.key, required this.note});
+  final NoteModel note;
 
   @override
   State<EditNoteViewBody> createState() => _EditNoteViewBodyState();
@@ -26,6 +30,11 @@ class _EditNoteViewBodyState extends State<EditNoteViewBody> {
           ),
           CustomAppBar(
             onPressed: () {
+
+              widget.note.title = title ?? widget.note.title;
+              widget.note.subTitle = content ?? widget.note.subTitle;
+              widget.note.save();
+              BlocProvider.of<NotesCubit>(context).fetchAllNotes();
               Navigator.pop(context);
             },
             title: 'Edit Note',
@@ -38,7 +47,7 @@ class _EditNoteViewBodyState extends State<EditNoteViewBody> {
             onChanged: (value) {
               title = value;
             },
-            hint: 'title',
+            hint: widget.note.title,
           ),
           const SizedBox(
             height: 16,
@@ -47,7 +56,7 @@ class _EditNoteViewBodyState extends State<EditNoteViewBody> {
             onChanged: (value) {
               content = value;
             },
-            hint: 'subTitle',
+            hint: widget.note.subTitle,
             maxLines: 5,
           ),
           const SizedBox(
